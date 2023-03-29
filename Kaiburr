@@ -1,0 +1,33 @@
+@RestController
+public class ServerController {
+
+    @Autowired
+    private ServerRepository serverRepository;
+
+    @GetMapping("/servers")
+    public List<Server> getServers(@RequestParam(required = false) String id) {
+        if (id != null) {
+            Server server = serverRepository.findById(id);
+            if (server != null) {
+                return Collections.singletonList(server);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Server not found");
+            }
+        } else {
+            return serverRepository.findAll();
+        }
+    }
+
+    @PutMapping("/servers")
+    public Server createServer(@RequestBody Server server) {
+        return serverRepository.save(server);
+    }
+
+    @DeleteMapping("/servers/{id}")
+    public void deleteServer(@PathVariable String id) {
+        serverRepository.deleteById(id);
+    }
+
+    @GetMapping("/servers/search")
+    public List<Server> findServersByName(@RequestParam String name) {
+        List<Server> servers = serverRepository.find
